@@ -22,21 +22,46 @@ const PrivateRoute = ({ children }) => {
 
 function App() {
   const { user } = useContext(AuthContext);
+  const [showSplash, setShowSplash] = React.useState(true);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900">
+        <div className="text-center animate-pulse duration-1000">
+          <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500 mb-4 tracking-tighter drop-shadow-lg">
+            Fit-Tracker
+          </h1>
+          <p className="text-xl md:text-2xl font-medium tracking-[0.3em] uppercase text-zinc-300">
+            Get fit today
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Router>
-      {user && <Navbar />}
-      <div className={`${user ? 'ml-0 md:ml-64 p-4 md:p-8 w-full' : 'w-full'}`}>
-        <Routes>
-          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-          <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-          
-          <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/workouts" element={<PrivateRoute><Workouts /></PrivateRoute>} />
-          <Route path="/meals" element={<PrivateRoute><MealPlanner /></PrivateRoute>} />
-          <Route path="/progress" element={<PrivateRoute><ProgressTracker /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-        </Routes>
+      <div className="flex bg-zinc-950 min-h-screen text-gray-100">
+        {user && <Navbar />}
+        <div className={`${user ? 'ml-0 md:ml-64 p-4 md:p-8 w-full transition-all duration-300' : 'w-full'}`}>
+          <Routes>
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+            <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+            
+            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/workouts" element={<PrivateRoute><Workouts /></PrivateRoute>} />
+            <Route path="/meals" element={<PrivateRoute><MealPlanner /></PrivateRoute>} />
+            <Route path="/progress" element={<PrivateRoute><ProgressTracker /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );

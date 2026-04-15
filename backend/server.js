@@ -40,6 +40,17 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
+// Serve Frontend in Production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  // Any route that is not an API route will be redirected to the frontend index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
+  });
+}
+
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
